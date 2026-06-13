@@ -5,13 +5,15 @@ echo "Starting deployment..."
 echo "Pulling latest code..."
 git pull origin main
 
-echo "echo Start Server"
-pm2 start app.js --name add
+echo "stopping old container"
+docker stop aws-app-container || true
+docker rm aws-app-container || true
 
-echo "Restarting app..."
-pm2 restart app
+echo "building image"
+docker build -t aws-app
 
-echo "Saving PM2 state..."
-pm2 save
+echo "Starting new container..."
+docker run -d -p 3000:3000 --name aws-app-container aws-app
 
 echo "Deployment completed!"
+
