@@ -23,6 +23,6 @@ jobs:
             cd ~/aws-app
             git pull origin main
             docker build -t aws-app .
-            docker stop app || true
-            docker rm app || true
-            docker run -d --name app -p 3000:3000 aws-app
+            docker stop aws-app-container || true
+            docker rm aws-app-container || true
+            docker run -d --name aws-app-container -p 3000:3000 aws-app
