@@ -1,7 +1,45 @@
 services:
-    app:
+  app:
     build: .
-    contianer_name: aws-app-container
+    container_name: aws-app-container
     ports:
-    - "3000:3000"
+      - "3000:3000"
     restart: always
+    networks:
+      - monitoring_default
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+    networks:
+      - monitoring_default
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SERVER_DOMAIN=grafana.raxeonky.com
+      - GF_SERVER_ROOT_URL=https://grafana.raxeonky.com
+    restart: always
+    networks:
+      - monitoring_default
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    restart: always
+    networks:
+      - monitoring_default
+
+networks:
+  monitoring_default:
+    external: true
